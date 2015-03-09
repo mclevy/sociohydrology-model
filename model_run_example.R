@@ -79,8 +79,11 @@ xyplot(df.PE) # plot
 # years
 n <- 10
 
-# data
-df.PE <- f.PE(cor="neg", yrs=n, pmean.s1 = 4, pmean.s2 = 1)
+# simulated data
+# df.PE <- f.PE(cor="neg", yrs=n, pmean.s1 = 4, pmean.s2 = 1)
+
+# testing data (static)
+df.PE <- f.PE_static(cor="neg", yrs=n, pmean = 5, etmean = 3)
 
 # parameters
 x <- f.init(iters=n,
@@ -138,11 +141,10 @@ test$x$out$H[-1, ] # hydrologic output
 test$x$out$S[-1,,"a"] # social output for group "a"
 test$x$out$S[-1,,"u"] # social output for group "u"
 ## NOTE: the first row in all outputs is the initialization data, and should be excluded from analysis.
+head(test$d) ; tail(test$d) # daily hydrologic data
 
 # record of modifications
 test$x$out$log
-
-#### NOTE: idea is to copy everything above under "Set Up" and Testing" section into a new file, and play around with different model parameters.
 
 ###########################################################################
 #### Extra ####

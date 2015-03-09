@@ -21,8 +21,11 @@ source('model_functions.R')
 # years
 n <- 10
 
-# data
-df.PE <- f.PE(cor="neg", yrs=n, pmean.s1 = 4, pmean.s2 = 1)
+# simulation data
+# df.PE <- f.PE(cor="neg", yrs=n, pmean.s1 = 4, pmean.s2 = 1)
+
+# testing data (static)
+df.PE <- f.PE_static(cor="neg", yrs=n, pmean = 5, etmean = 3)
 
 # parameters
 x <- f.init(iters=n,

@@ -294,6 +294,30 @@ f.PE <- function(cor = "neg", pmean.s1 = 8, pmean.s2 = 3, yrs = 10, s1.days = 20
   return (dat)
 }
 
+f.PE_static <- function(cor = "neg", pmean = 5, etmean = 3, yrs = 10, s1.days = 200, s2.days = 165){
+  
+  # cor is correlation between rainfall and ET
+  # pmeanis daily average rainfall intensities (same for both seasons)
+  # etmean is daily average et (same for both seasons)
+  # yrs is total number of yrs to simulate, should be same as iterations (and first year will be used to initialize the hydrologic model)
+  # s1.days is total number of days in first (e.g. wet) season, which is split (beginning and end of year starting in January); s2.days is total number in 2nd (dry) season (middle of year)
+  # assuming everything in mm
+  
+  if (!(s1.days + s2.days == 365)) stop ("Number of days in seasons must sum to 365.")
+  
+  cor.set <- cor
+
+  ### time series; starts in January.
+  ##  rain:
+  rain <- rep(pmean, yrs*365)
+  ## et
+  et <- rep(etmean, yrs*365)
+  
+  dat <- data.frame( date = 1:length(rain), P = rain, E = et, year = rep(1:yrs,each=365), season = rep(c(rep(1,s1.days/2), rep(2,s2.days), rep(1,s1.days/2)), yrs) )
+  dat <- zoo(dat[,c("P", "E", "year", "season")], order.by = dat$date, frequency = 1)
+  return (dat)
+}
+
 ## simulates Q
 f.Q <- function(dat){
   
