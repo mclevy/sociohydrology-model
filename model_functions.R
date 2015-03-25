@@ -941,17 +941,6 @@ shmod <- function(x,d,n){
     }
   }
   
-  ## Output plots
-  
-  # melt
-  dfm.S <- melt(SM$x$out$S[-1,,])
-  dfm.H <- melt(SM$x$out$H[-1,])
-  
-  # social
-  SM$plot.S <- ggplot(dfm.S, aes(x=X1,y=value, colour = X3)) + geom_line() + facet_wrap(~X2, scales = "free") + theme_bw() + xlab("Years")
-  # hydrology
-  SM$plot.H <-ggplot(dfm.H, aes(x=X1,y=value)) + geom_line() + facet_wrap(~X2, scales = "free") + theme_bw() + xlab("Years")
-  
   # data:
   # note: SM$d is modified daily climate and hydrologic data at end of run; d is original daily climate data
   
@@ -959,7 +948,27 @@ shmod <- function(x,d,n){
   SM$d$U <- SM$d$P - d$P
   SM$d$P <- SM$d$P - SM$d$U
   if (!all.equal(SM$d$P,d$P)) stop("Adjusted P data (with applied water (U) separated) does not match original P data.")
-  SM$plot.d <- xyplot(SM$d)
+  
+  ## Output plots
+  
+  # copy for plotting
+  SMc <- SM
+  
+  # re-name for plotting
+  attributes(SMc$x$out$S)$dimnames[[2]] <- c("Population Fraction (X)","Population (N)", "Group Profit (Pi)","SW Access (Qsw.access)","GW Access (Qgw.access)","SW Use (Qsw.use.S)","GW Use (Qgw.use.S)","Product Quantity (Q.i)","Product Price (p.i)")
+  attributes(SMc$x$out$H)$dimnames[[2]] <- c("Rainfall (P)", "ET (E)", "Total Water Use (Quse.H)", "SW Store (Qsw.store.H)", "GW Store (Qgw.store.H)", "Stream Flow (Qstream.H)", "Wastewater Flow (Qwaste.H)")
+  names(SMc$d) <- c("Rainfall (P)", "ET (E)", "Total Flow (Q)", "Flow to Reservoir (Q.R)","Flow to Aquifer (Q.A)","Flow to Stream (Q.S)", "year","season","Water Use (U)")
+  
+  # melt
+  dfm.S <- melt(SMc$x$out$S[-1,,])
+  dfm.H <- melt(SMc$x$out$H[-1,])
+  
+  # social
+  SM$plot.S <- ggplot(dfm.S, aes(x=X1,y=value, colour = X3)) + geom_line() + facet_wrap(~X2, scales = "free") + theme_bw() + xlab("Years")
+  # hydrology
+  SM$plot.H <-ggplot(dfm.H, aes(x=X1,y=value)) + geom_line() + facet_wrap(~X2, scales = "free") + theme_bw() + xlab("Years")
+  # data
+  SM$plot.d <- xyplot(SMc$d)
   
   ## Returns
   
